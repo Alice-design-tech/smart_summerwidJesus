@@ -115,7 +115,7 @@ export default function App() {
             color: "#7c3aed",
           }}
         >
-          Youth Retreat Enrollment
+          Smart Summer with Jesus
         </h1>
 
         <p
