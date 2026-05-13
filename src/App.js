@@ -124,7 +124,7 @@ export default function App() {
             color: "gray",
           }}
         >
-          Register for the now
+          Register now.
         </p>
 
         <form onSubmit={handleSubmit}>
