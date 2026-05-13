@@ -124,7 +124,7 @@ export default function App() {
             color: "gray",
           }}
         >
-          Register for the Youth Retreat
+          Register for the now
         </p>
 
         <form onSubmit={handleSubmit}>
