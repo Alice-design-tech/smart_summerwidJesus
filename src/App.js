@@ -14,6 +14,7 @@ export default function App() {
 
   const [participants, setParticipants] = useState([]);
   const [showAdmin, setShowAdmin] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem("participants");
@@ -39,7 +40,13 @@ export default function App() {
         createdAt: new Date(),
       });
 
-      alert("Enrollment Submitted Successfully!");
+      const updated = [...participants, formData];
+
+      setParticipants(updated);
+
+      localStorage.setItem("participants", JSON.stringify(updated));
+
+      setSuccess(true);
 
       setFormData({
         name: "",
@@ -75,7 +82,7 @@ export default function App() {
       p.attendance,
     ]);
 
-    const csvContent = [headers, ...rows].map((e) => e.join(",")).join("\\n");
+    const csvContent = [headers, ...rows].map((e) => e.join(",")).join("\n");
 
     const blob = new Blob([csvContent], {
       type: "text/csv;charset=utf-8;",
@@ -89,6 +96,100 @@ export default function App() {
 
     link.click();
   };
+
+  // SUCCESS PAGE
+  if (success) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          background: "linear-gradient(to right, #fbcfe8, #ddd6fe)",
+          padding: "20px",
+          fontFamily: "Arial",
+        }}
+      >
+        <div
+          style={{
+            background: "white",
+            padding: "40px",
+            borderRadius: "20px",
+            textAlign: "center",
+            width: "100%",
+            maxWidth: "500px",
+            boxShadow: "0 0 20px rgba(0,0,0,0.1)",
+          }}
+        >
+          <h1 style={{ color: "#7c3aed" }}>✅ Successfully Enrolled!</h1>
+
+          <h2>Welcome to Smart Summer with Jesus 🌸</h2>
+
+          <p>
+            Thank you <b>{formData.name}</b> for registering.
+          </p>
+
+          <div
+            style={{
+              marginTop: "25px",
+              textAlign: "left",
+              background: "#f9fafb",
+              padding: "20px",
+              borderRadius: "12px",
+            }}
+          >
+            <p>
+              <b>📍 Venue:</b> Thangamani Kalyana Mandabam, Thudiyalur, Cbe
+            </p>
+
+            <p>
+              <b>📅 Date:</b> May 21 - May 25
+            </p>
+
+            <p>
+              <b>⏰ Time:</b> Starts from May 21, 7AM
+            </p>
+
+            <p>
+              <b>🎒 Bring:</b> Bible, Notebook, Water Bottle, Plate
+            </p>
+
+            <p>
+              <b>📞 Contact:</b> 9597233332
+            </p>
+          </div>
+
+          <p
+            style={{
+              marginTop: "25px",
+              color: "#666",
+              fontStyle: "italic",
+            }}
+          >
+            “Let your light shine before others.”
+            <br />— Matthew 5:16 ✨
+          </p>
+
+          <button
+            onClick={() => setSuccess(false)}
+            style={{
+              marginTop: "25px",
+              padding: "12px 20px",
+              border: "none",
+              borderRadius: "10px",
+              background: "#7c3aed",
+              color: "white",
+              cursor: "pointer",
+              fontSize: "15px",
+            }}
+          >
+            Back to Form
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -115,7 +216,7 @@ export default function App() {
             color: "#7c3aed",
           }}
         >
-          Youth Retreat Enrollment
+          Smart Summer
         </h1>
 
         <p
@@ -124,7 +225,7 @@ export default function App() {
             color: "gray",
           }}
         >
-          Register for the Youth Retreat
+          With Jesus ✨
         </p>
 
         <form onSubmit={handleSubmit}>
@@ -242,31 +343,30 @@ export default function App() {
             <h2 style={{ color: "#7c3aed" }}>Registered Participants</h2>
 
             <table
-              border="1"
-              cellPadding="10"
               style={{
                 width: "100%",
                 borderCollapse: "collapse",
+                marginTop: "15px",
               }}
             >
               <thead>
                 <tr>
-                  <th>Name</th>
-                  <th>Phone</th>
-                  <th>Place</th>
-                  <th>Age</th>
-                  <th>Attendance</th>
+                  <th style={tableHeader}>Name</th>
+                  <th style={tableHeader}>Phone</th>
+                  <th style={tableHeader}>Place</th>
+                  <th style={tableHeader}>Age</th>
+                  <th style={tableHeader}>Attendance</th>
                 </tr>
               </thead>
 
               <tbody>
                 {participants.map((p, index) => (
                   <tr key={index}>
-                    <td>{p.name}</td>
-                    <td>{p.phone}</td>
-                    <td>{p.place}</td>
-                    <td>{p.age}</td>
-                    <td>{p.attendance}</td>
+                    <td style={tableCell}>{p.name}</td>
+                    <td style={tableCell}>{p.phone}</td>
+                    <td style={tableCell}>{p.place}</td>
+                    <td style={tableCell}>{p.age}</td>
+                    <td style={tableCell}>{p.attendance}</td>
                   </tr>
                 ))}
               </tbody>
@@ -285,6 +385,7 @@ const inputStyle = {
   borderRadius: "10px",
   border: "1px solid #ddd",
   fontSize: "15px",
+  boxSizing: "border-box",
 };
 
 const adminButton = {
@@ -294,4 +395,15 @@ const adminButton = {
   background: "#7c3aed",
   color: "white",
   cursor: "pointer",
+};
+
+const tableHeader = {
+  border: "1px solid #ddd",
+  padding: "10px",
+  background: "#ede9fe",
+};
+
+const tableCell = {
+  border: "1px solid #ddd",
+  padding: "10px",
 };
