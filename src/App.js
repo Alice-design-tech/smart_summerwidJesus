@@ -98,7 +98,7 @@ export default function App() {
             </p>
 
             <p>
-              <b>⏰ Time:</b> Starts from May 21, 7:00 AM
+              <b>⏰ Time:</b> Starts from May 21, 7 AM
             </p>
 
             <p>
