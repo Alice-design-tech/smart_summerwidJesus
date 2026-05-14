@@ -12,17 +12,7 @@ export default function App() {
     attendance: "First Time",
   });
 
-  const [participants, setParticipants] = useState([]);
-  const [showAdmin, setShowAdmin] = useState(false);
   const [success, setSuccess] = useState(false);
-
-  useEffect(() => {
-    const saved = localStorage.getItem("participants");
-
-    if (saved) {
-      setParticipants(JSON.parse(saved));
-    }
-  }, []);
 
   const handleChange = (e) => {
     setFormData({
@@ -40,12 +30,6 @@ export default function App() {
         createdAt: new Date(),
       });
 
-      const updated = [...participants, formData];
-
-      setParticipants(updated);
-
-      localStorage.setItem("participants", JSON.stringify(updated));
-
       setSuccess(true);
 
       setFormData({
@@ -61,40 +45,6 @@ export default function App() {
 
       alert("Something went wrong!");
     }
-  };
-
-  const exportCSV = () => {
-    const headers = [
-      "Name",
-      "Phone",
-      "Place",
-      "Age",
-      "Parent Phone",
-      "Attendance",
-    ];
-
-    const rows = participants.map((p) => [
-      p.name,
-      p.phone,
-      p.place,
-      p.age,
-      p.parentPhone,
-      p.attendance,
-    ]);
-
-    const csvContent = [headers, ...rows].map((e) => e.join(",")).join("\n");
-
-    const blob = new Blob([csvContent], {
-      type: "text/csv;charset=utf-8;",
-    });
-
-    const link = document.createElement("a");
-
-    link.href = URL.createObjectURL(blob);
-
-    link.download = "participants.csv";
-
-    link.click();
   };
 
   // SUCCESS PAGE
@@ -140,23 +90,23 @@ export default function App() {
             }}
           >
             <p>
-              <b>📍 Venue:</b> Thangamani Kalyana Mandabam, Thudiyalur, Cbe
+              <b>📍 Venue:</b> St. Mary's Retreat Center
             </p>
 
             <p>
-              <b>📅 Date:</b> May 21 - May 25
+              <b>📅 Date:</b> June 14 - June 16
             </p>
 
             <p>
-              <b>⏰ Time:</b> Starts from May 21, 7AM
+              <b>⏰ Time:</b> 9:00 AM
             </p>
 
             <p>
-              <b>🎒 Bring:</b> Bible, Notebook, Water Bottle, Plate
+              <b>🎒 Bring:</b> Bible, Notebook, Water Bottle
             </p>
 
             <p>
-              <b>📞 Contact:</b> 9597233332, 9597933339
+              <b>📞 Contact:</b> 9876543210
             </p>
           </div>
 
@@ -320,59 +270,6 @@ export default function App() {
             Enroll Now
           </button>
         </form>
-
-        <div style={{ marginTop: "30px" }}>
-          <button onClick={() => setShowAdmin(!showAdmin)} style={adminButton}>
-            {showAdmin ? "Hide Admin Panel" : "Show Admin Panel"}
-          </button>
-
-          <button
-            onClick={exportCSV}
-            style={{
-              ...adminButton,
-              background: "#2563eb",
-              marginLeft: "10px",
-            }}
-          >
-            Export CSV
-          </button>
-        </div>
-
-        {showAdmin && (
-          <div style={{ marginTop: "30px" }}>
-            <h2 style={{ color: "#7c3aed" }}>Registered Participants</h2>
-
-            <table
-              style={{
-                width: "100%",
-                borderCollapse: "collapse",
-                marginTop: "15px",
-              }}
-            >
-              <thead>
-                <tr>
-                  <th style={tableHeader}>Name</th>
-                  <th style={tableHeader}>Phone</th>
-                  <th style={tableHeader}>Place</th>
-                  <th style={tableHeader}>Age</th>
-                  <th style={tableHeader}>Attendance</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {participants.map((p, index) => (
-                  <tr key={index}>
-                    <td style={tableCell}>{p.name}</td>
-                    <td style={tableCell}>{p.phone}</td>
-                    <td style={tableCell}>{p.place}</td>
-                    <td style={tableCell}>{p.age}</td>
-                    <td style={tableCell}>{p.attendance}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
       </div>
     </div>
   );
@@ -386,24 +283,4 @@ const inputStyle = {
   border: "1px solid #ddd",
   fontSize: "15px",
   boxSizing: "border-box",
-};
-
-const adminButton = {
-  padding: "12px 18px",
-  border: "none",
-  borderRadius: "10px",
-  background: "#7c3aed",
-  color: "white",
-  cursor: "pointer",
-};
-
-const tableHeader = {
-  border: "1px solid #ddd",
-  padding: "10px",
-  background: "#ede9fe",
-};
-
-const tableCell = {
-  border: "1px solid #ddd",
-  padding: "10px",
 };
