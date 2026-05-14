@@ -90,23 +90,23 @@ export default function App() {
             }}
           >
             <p>
-              <b>📍 Venue:</b> St. Mary's Retreat Center
+              <b>📍 Venue:</b> Thangamani Kalyana Mandabam, Thudiyalur, Cbe
             </p>
 
             <p>
-              <b>📅 Date:</b> June 14 - June 16
+              <b>📅 Date:</b> May 21 - May 25
             </p>
 
             <p>
-              <b>⏰ Time:</b> 9:00 AM
+              <b>⏰ Time:</b> Starts from May 21, 7:00 AM
             </p>
 
             <p>
-              <b>🎒 Bring:</b> Bible, Notebook, Water Bottle
+              <b>🎒 Bring:</b> Bible, Notebook, Water Bottle, Plate
             </p>
 
             <p>
-              <b>📞 Contact:</b> 9876543210
+              <b>📞 Contact:</b> 9597233332, 9597933339
             </p>
           </div>
 
