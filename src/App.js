@@ -156,7 +156,7 @@ export default function App() {
             </p>
 
             <p>
-              <b>📞 Contact:</b> 9597233332
+              <b>📞 Contact:</b> 9597233332, 9597933339
             </p>
           </div>
 
