@@ -129,7 +129,7 @@ export default function App() {
             }}
           >
             <p>
-              <b>📍 Venue:</b> Thangamani Kalyana Mandabam, Thudiyalur, Cbe
+              <b>📍 Venue:</b> Thangamani Marriage Hall, Thudiyalur, Cbe
             </p>
 
             <p>
