@@ -1,26 +1,69 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { db } from "./firebase";
 import { collection, addDoc } from "firebase/firestore";
+import Admin from "./Admin";
 
 export default function App() {
+  const cities = [
+    "Coimbatore",
+    "Chennai",
+    "Madurai",
+    "Salem",
+    "Erode",
+    "Tiruppur",
+    "Trichy",
+    "Thoothukudi",
+    "Tirunelveli",
+    "Karur",
+    "Namakkal",
+    "Pollachi",
+    "Ooty",
+    "Cuddalore",
+    "Thanjavur",
+  ];
+
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
-    place: "",
+    area: "",
+    city: "",
     age: "",
     parentPhone: "",
+    referredBy: "",
     attendance: "First Time",
   });
 
-  const [participants, setParticipants] = useState([]);
+  const [success, setSuccess] = useState(false);
+
   const [showAdmin, setShowAdmin] = useState(false);
 
-  useEffect(() => {
-    const saved = localStorage.getItem("participants");
+  const [adminPassword, setAdminPassword] = useState("");
 
-    if (saved) {
-      setParticipants(JSON.parse(saved));
-    }
+  const [timeLeft, setTimeLeft] = useState("");
+
+  // COUNTDOWN TIMER
+  useEffect(() => {
+    const targetDate = new Date("May 21, 2026 07:00:00").getTime();
+
+    const interval = setInterval(() => {
+      const now = new Date().getTime();
+
+      const distance = targetDate - now;
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+
+      const hours = Math.floor(
+        (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+      );
+
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      setTimeLeft(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+    }, 1000);
+
+    return () => clearInterval(interval);
   }, []);
 
   const handleChange = (e) => {
@@ -36,17 +79,20 @@ export default function App() {
     try {
       await addDoc(collection(db, "participants"), {
         ...formData,
+        city: formData.city.trim(),
         createdAt: new Date(),
       });
 
-      alert("Enrollment Submitted Successfully!");
+      setSuccess(true);
 
       setFormData({
         name: "",
         phone: "",
-        place: "",
+        area: "",
+        city: "",
         age: "",
         parentPhone: "",
+        referredBy: "",
         attendance: "First Time",
       });
     } catch (error) {
@@ -56,39 +102,92 @@ export default function App() {
     }
   };
 
-  const exportCSV = () => {
-    const headers = [
-      "Name",
-      "Phone",
-      "Place",
-      "Age",
-      "Parent Phone",
-      "Attendance",
-    ];
+  // ADMIN
+  if (showAdmin) {
+    return <Admin />;
+  }
 
-    const rows = participants.map((p) => [
-      p.name,
-      p.phone,
-      p.place,
-      p.age,
-      p.parentPhone,
-      p.attendance,
-    ]);
+  // SUCCESS PAGE
+  if (success) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          background: "linear-gradient(to right, #fbcfe8, #ddd6fe)",
+          padding: "20px",
+          fontFamily: "Arial",
+        }}
+      >
+        <div
+          style={{
+            background: "white",
+            padding: "40px",
+            borderRadius: "20px",
+            textAlign: "center",
+            width: "100%",
+            maxWidth: "500px",
+            boxShadow: "0 0 20px rgba(0,0,0,0.1)",
+          }}
+        >
+          <h1 style={{ color: "#7c3aed" }}>✅ Successfully Enrolled!</h1>
 
-    const csvContent = [headers, ...rows].map((e) => e.join(",")).join("\\n");
+          <h2>Welcome to Smart Summer with Jesus 🌸</h2>
 
-    const blob = new Blob([csvContent], {
-      type: "text/csv;charset=utf-8;",
-    });
+          <p>
+            Thank you <b>{formData.name}</b> for registering.
+          </p>
 
-    const link = document.createElement("a");
+          <div
+            style={{
+              marginTop: "25px",
+              textAlign: "left",
+              background: "#f9fafb",
+              padding: "20px",
+              borderRadius: "12px",
+            }}
+          >
+            <p>
+              <b>📍 Venue:</b> Thangamani Marriage Hall, Thudiyalur, Cbe
+            </p>
 
-    link.href = URL.createObjectURL(blob);
+            <p>
+              <b>📅 Date:</b> May 21 - May 25
+            </p>
 
-    link.download = "participants.csv";
+            <p>
+              <b>⏰ Time:</b> Starts at 7:00 AM, May 21
+            </p>
 
-    link.click();
-  };
+            <p>
+              <b>🎒 Bring:</b> Bible, Notebook, Water Bottle, Plate
+            </p>
+
+            <p>
+              <b>📞 Contact:</b> 9597233332, 9597933339
+            </p>
+          </div>
+
+          <button
+            onClick={() => setSuccess(false)}
+            style={{
+              marginTop: "25px",
+              padding: "12px 20px",
+              border: "none",
+              borderRadius: "10px",
+              background: "#7c3aed",
+              color: "white",
+              cursor: "pointer",
+            }}
+          >
+            Back to Form
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -115,7 +214,7 @@ export default function App() {
             color: "#7c3aed",
           }}
         >
-          Youth Retreat Enrollment
+          Smart Summer
         </h1>
 
         <p
@@ -124,8 +223,23 @@ export default function App() {
             color: "gray",
           }}
         >
-          Register for the Youth Retreat
+          With Jesus ✨
         </p>
+
+        {/* COUNTDOWN */}
+        <div
+          style={{
+            marginTop: "20px",
+            padding: "15px",
+            borderRadius: "15px",
+            background: "#ede9fe",
+            textAlign: "center",
+          }}
+        >
+          <h3 style={{ color: "#6d28d9" }}>Retreat Starts In</h3>
+
+          <h2>{timeLeft}</h2>
+        </div>
 
         <form onSubmit={handleSubmit}>
           <input
@@ -150,13 +264,31 @@ export default function App() {
 
           <input
             type="text"
-            name="place"
-            placeholder="Place"
-            value={formData.place}
+            name="area"
+            placeholder="Area"
+            value={formData.area}
             onChange={handleChange}
             required
             style={inputStyle}
           />
+
+          {/* CITY DROPDOWN */}
+          <input
+            list="cities"
+            type="text"
+            name="city"
+            placeholder="City"
+            value={formData.city}
+            onChange={handleChange}
+            required
+            style={inputStyle}
+          />
+
+          <datalist id="cities">
+            {cities.map((city, index) => (
+              <option key={index} value={city} />
+            ))}
+          </datalist>
 
           <input
             type="number"
@@ -175,6 +307,16 @@ export default function App() {
             value={formData.parentPhone}
             onChange={handleChange}
             required
+            style={inputStyle}
+          />
+
+          {/* REFERRED BY */}
+          <input
+            type="text"
+            name="referredBy"
+            placeholder="Referred By (Friend / Social Media / Church...)"
+            value={formData.referredBy}
+            onChange={handleChange}
             style={inputStyle}
           />
 
@@ -220,59 +362,46 @@ export default function App() {
           </button>
         </form>
 
-        <div style={{ marginTop: "30px" }}>
-          <button onClick={() => setShowAdmin(!showAdmin)} style={adminButton}>
-            {showAdmin ? "Hide Admin Panel" : "Show Admin Panel"}
-          </button>
+        {/* ADMIN LOGIN */}
+        <div
+          style={{
+            marginTop: "40px",
+            textAlign: "center",
+          }}
+        >
+          <input
+            type="password"
+            placeholder="Admin Password"
+            value={adminPassword}
+            onChange={(e) => setAdminPassword(e.target.value)}
+            style={{
+              padding: "10px",
+              borderRadius: "10px",
+              border: "1px solid #ccc",
+              marginRight: "10px",
+            }}
+          />
 
           <button
-            onClick={exportCSV}
+            onClick={() => {
+              if (adminPassword === "smartsummeradmin") {
+                setShowAdmin(true);
+              } else {
+                alert("Wrong Password");
+              }
+            }}
             style={{
-              ...adminButton,
-              background: "#2563eb",
-              marginLeft: "10px",
+              padding: "10px 20px",
+              border: "none",
+              borderRadius: "10px",
+              background: "#111",
+              color: "white",
+              cursor: "pointer",
             }}
           >
-            Export CSV
+            Admin Login
           </button>
         </div>
-
-        {showAdmin && (
-          <div style={{ marginTop: "30px" }}>
-            <h2 style={{ color: "#7c3aed" }}>Registered Participants</h2>
-
-            <table
-              border="1"
-              cellPadding="10"
-              style={{
-                width: "100%",
-                borderCollapse: "collapse",
-              }}
-            >
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Phone</th>
-                  <th>Place</th>
-                  <th>Age</th>
-                  <th>Attendance</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {participants.map((p, index) => (
-                  <tr key={index}>
-                    <td>{p.name}</td>
-                    <td>{p.phone}</td>
-                    <td>{p.place}</td>
-                    <td>{p.age}</td>
-                    <td>{p.attendance}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
       </div>
     </div>
   );
@@ -285,13 +414,5 @@ const inputStyle = {
   borderRadius: "10px",
   border: "1px solid #ddd",
   fontSize: "15px",
-};
-
-const adminButton = {
-  padding: "12px 18px",
-  border: "none",
-  borderRadius: "10px",
-  background: "#7c3aed",
-  color: "white",
-  cursor: "pointer",
+  boxSizing: "border-box",
 };
