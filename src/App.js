@@ -1,114 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { db } from "./firebase";
-import { collection, addDoc } from "firebase/firestore";
+import React, { useState } from "react";
+import Registration from "./Registration";
+import AdminLogin from "./AdminLogin";
 import Admin from "./Admin";
+import logo from "./logo.png";
 
 export default function App() {
-  const cities = [
-    "Coimbatore",
-    "Chennai",
-    "Madurai",
-    "Salem",
-    "Erode",
-    "Tiruppur",
-    "Trichy",
-    "Thoothukudi",
-    "Tirunelveli",
-    "Karur",
-    "Namakkal",
-    "Pollachi",
-    "Ooty",
-    "Cuddalore",
-    "Thanjavur",
-  ];
+  const [page, setPage] = useState("home");
 
-  const [formData, setFormData] = useState({
-    name: "",
-    phone: "",
-    area: "",
-    city: "",
-    age: "",
-    parentPhone: "",
-    referredBy: "",
-    attendance: "First Time",
-  });
-
-  const [success, setSuccess] = useState(false);
-
-  const [showAdmin, setShowAdmin] = useState(false);
-
-  const [adminPassword, setAdminPassword] = useState("");
-
-  const [timeLeft, setTimeLeft] = useState("");
-
-  // COUNTDOWN TIMER
-  useEffect(() => {
-    const targetDate = new Date("May 21, 2026 07:00:00").getTime();
-
-    const interval = setInterval(() => {
-      const now = new Date().getTime();
-
-      const distance = targetDate - now;
-
-      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-
-      const hours = Math.floor(
-        (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-      );
-
-      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-
-      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-      setTimeLeft(`${days}d ${hours}h ${minutes}m ${seconds}s`);
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      await addDoc(collection(db, "participants"), {
-        ...formData,
-        city: formData.city.trim(),
-        createdAt: new Date(),
-      });
-
-      setSuccess(true);
-
-      setFormData({
-        name: "",
-        phone: "",
-        area: "",
-        city: "",
-        age: "",
-        parentPhone: "",
-        referredBy: "",
-        attendance: "First Time",
-      });
-    } catch (error) {
-      console.error("Error adding document: ", error);
-
-      alert("Something went wrong!");
-    }
-  };
-
-  // ADMIN
-  if (showAdmin) {
-    return <Admin />;
-  }
-
-  // SUCCESS PAGE
-  if (success) {
+  // HOME PAGE
+  if (page === "home") {
     return (
       <div
         style={{
@@ -116,303 +16,123 @@ export default function App() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          background: "linear-gradient(to right, #fbcfe8, #ddd6fe)",
-          padding: "20px",
+          background: "linear-gradient(to right, #fbcfe8, #ddd6fe, #bfdbfe)",
           fontFamily: "Arial",
+          padding: "20px",
         }}
       >
         <div
           style={{
             background: "white",
             padding: "40px",
-            borderRadius: "20px",
-            textAlign: "center",
+            borderRadius: "25px",
             width: "100%",
             maxWidth: "500px",
+            textAlign: "center",
             boxShadow: "0 0 20px rgba(0,0,0,0.1)",
           }}
         >
-          <h1 style={{ color: "#7c3aed" }}>✅ Successfully Enrolled!</h1>
-
-          <h2>Welcome to Smart Summer with Jesus 🌸</h2>
-
-          <p>
-            Thank you <b>{formData.name}</b> for registering.
-          </p>
-
-          <div
+          <img
+            src={logo}
+            alt="Logo"
             style={{
-              marginTop: "25px",
-              textAlign: "left",
-              background: "#f9fafb",
-              padding: "20px",
-              borderRadius: "12px",
+              width: "120px",
+              height: "120px",
+              objectFit: "contain",
+              marginBottom: "20px",
             }}
-          >
-            <p>
-              <b>📍 Venue:</b> Thangamani Marriage Hall, Thudiyalur, Cbe
-            </p>
+          />
 
-            <p>
-              <b>📅 Date:</b> May 21 - May 25
-            </p>
+          <h1 style={{ color: "#7c3aed", marginBottom: "10px" }}>
+            Smart Summer
+          </h1>
 
-            <p>
-              <b>⏰ Time:</b> Starts at 7:00 AM, May 21
-            </p>
-
-            <p>
-              <b>🎒 Bring:</b> Bible, Notebook, Water Bottle, Plate
-            </p>
-
-            <p>
-              <b>📞 Contact:</b> 9597233332, 9597933339
-            </p>
-          </div>
+          <p style={{ color: "#666", marginBottom: "40px" }}>With Jesus ✨</p>
 
           <button
-            onClick={() => setSuccess(false)}
-            style={{
-              marginTop: "25px",
-              padding: "12px 20px",
-              border: "none",
-              borderRadius: "10px",
-              background: "#7c3aed",
-              color: "white",
-              cursor: "pointer",
-            }}
+            onClick={() => setPage("registration")}
+            style={buttonStyle("#7c3aed")}
           >
-            Back to Form
+            Candidate Registration
           </button>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "linear-gradient(to right, #fbcfe8, #ddd6fe, #bfdbfe)",
-        padding: "30px",
-        fontFamily: "Arial",
-      }}
-    >
-      <div
-        style={{
-          maxWidth: "700px",
-          margin: "auto",
-          background: "white",
-          padding: "30px",
-          borderRadius: "20px",
-          boxShadow: "0 0 15px rgba(0,0,0,0.1)",
-        }}
-      >
-        <h1
-          style={{
-            textAlign: "center",
-            color: "#7c3aed",
-          }}
-        >
-          Smart Summer
-        </h1>
-
-        <p
-          style={{
-            textAlign: "center",
-            color: "gray",
-          }}
-        >
-          With Jesus ✨
-        </p>
-
-        {/* COUNTDOWN */}
-        <div
-          style={{
-            marginTop: "20px",
-            padding: "15px",
-            borderRadius: "15px",
-            background: "#ede9fe",
-            textAlign: "center",
-          }}
-        >
-          <h3 style={{ color: "#6d28d9" }}>Retreat Starts In</h3>
-
-          <h2>{timeLeft}</h2>
-        </div>
-
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            name="name"
-            placeholder="Full Name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-            style={inputStyle}
-          />
-
-          <input
-            type="tel"
-            name="phone"
-            placeholder="Phone Number"
-            value={formData.phone}
-            onChange={handleChange}
-            required
-            style={inputStyle}
-          />
-
-          <input
-            type="text"
-            name="area"
-            placeholder="Area"
-            value={formData.area}
-            onChange={handleChange}
-            required
-            style={inputStyle}
-          />
-
-          {/* CITY DROPDOWN */}
-          <input
-            list="cities"
-            type="text"
-            name="city"
-            placeholder="City"
-            value={formData.city}
-            onChange={handleChange}
-            required
-            style={inputStyle}
-          />
-
-          <datalist id="cities">
-            {cities.map((city, index) => (
-              <option key={index} value={city} />
-            ))}
-          </datalist>
-
-          <input
-            type="number"
-            name="age"
-            placeholder="Age"
-            value={formData.age}
-            onChange={handleChange}
-            required
-            style={inputStyle}
-          />
-
-          <input
-            type="tel"
-            name="parentPhone"
-            placeholder="Parent Phone Number"
-            value={formData.parentPhone}
-            onChange={handleChange}
-            required
-            style={inputStyle}
-          />
-
-          {/* REFERRED BY */}
-          <input
-            type="text"
-            name="referredBy"
-            placeholder="Referred By (Friend / Social Media / Church...)"
-            value={formData.referredBy}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-
-          <div style={{ marginTop: "15px" }}>
-            <label>
-              <input
-                type="radio"
-                name="attendance"
-                value="First Time"
-                checked={formData.attendance === "First Time"}
-                onChange={handleChange}
-              />
-              First Time
-            </label>
-
-            <label style={{ marginLeft: "20px" }}>
-              <input
-                type="radio"
-                name="attendance"
-                value="Attended Before"
-                checked={formData.attendance === "Attended Before"}
-                onChange={handleChange}
-              />
-              Attended Before
-            </label>
-          </div>
 
           <button
-            type="submit"
+            onClick={() => setPage("adminlogin")}
             style={{
-              width: "100%",
-              padding: "15px",
+              ...buttonStyle("#111"),
               marginTop: "20px",
-              border: "none",
-              borderRadius: "10px",
-              background: "#7c3aed",
-              color: "white",
-              fontSize: "16px",
-              cursor: "pointer",
-            }}
-          >
-            Enroll Now
-          </button>
-        </form>
-
-        {/* ADMIN LOGIN */}
-        <div
-          style={{
-            marginTop: "40px",
-            textAlign: "center",
-          }}
-        >
-          <input
-            type="password"
-            placeholder="Admin Password"
-            value={adminPassword}
-            onChange={(e) => setAdminPassword(e.target.value)}
-            style={{
-              padding: "10px",
-              borderRadius: "10px",
-              border: "1px solid #ccc",
-              marginRight: "10px",
-            }}
-          />
-
-          <button
-            onClick={() => {
-              if (adminPassword === "smartsummeradmin") {
-                setShowAdmin(true);
-              } else {
-                alert("Wrong Password");
-              }
-            }}
-            style={{
-              padding: "10px 20px",
-              border: "none",
-              borderRadius: "10px",
-              background: "#111",
-              color: "white",
-              cursor: "pointer",
             }}
           >
             Admin Login
           </button>
         </div>
       </div>
-    </div>
-  );
+    );
+  }
+
+    if (page === "home") {
+    return (
+      <div style={{ minHeight: "100vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
+        <div>
+          <img src={logo} alt="logo" style={{ width: 120 }} />
+
+          <h1>Smart Summer</h1>
+
+          <button onClick={() => setPage("registration")}>
+            Candidate Registration
+          </button>
+
+          <button onClick={() => setPage("adminlogin")}>
+            Admin Login
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // USER REGISTRATION
+  if (page === "registration") {
+    return <Registration goHome={() => setPage("home")} />;
+  }
+
+  // ADMIN ENTRY REGISTRATION
+  if (page === "adminregistration") {
+    return (
+      <Registration
+        goHome={() => setPage("home")}
+        goBack={() => setPage("adminlogin")}
+        isAdmin={true}
+        openAdmin={() => setPage("admin")}
+      />
+    );
+  }
+
+  // ADMIN LOGIN
+  if (page === "adminlogin") {
+    return (
+      <AdminLogin
+        goHome={() => setPage("home")}
+        openDashboard={() => setPage("adminregistration")}
+      />
+    );
+  }
+
+  // ADMIN DASHBOARD
+  if (page === "admin") {
+    return <Admin goBack={() => setPage("adminregistration")} />;
+  }
+
+  return null;
 }
 
-const inputStyle = {
+// BUTTON STYLE
+const buttonStyle = (bg) => ({
   width: "100%",
-  padding: "12px",
-  marginTop: "15px",
-  borderRadius: "10px",
-  border: "1px solid #ddd",
-  fontSize: "15px",
-  boxSizing: "border-box",
-};
+  padding: "15px",
+  border: "none",
+  borderRadius: "12px",
+  background: bg,
+  color: "white",
+  fontSize: "16px",
+  cursor: "pointer",
+});

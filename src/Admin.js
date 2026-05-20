@@ -8,11 +8,9 @@ import {
   updateDoc,
 } from "firebase/firestore";
 
-export default function Admin() {
+export default function Admin({ goBack }) {
   const [participants, setParticipants] = useState([]);
-
   const [editingId, setEditingId] = useState(null);
-
   const [editData, setEditData] = useState({});
 
   useEffect(() => {
@@ -55,14 +53,12 @@ export default function Admin() {
     if (!confirmDelete) return;
 
     await deleteDoc(doc(db, "participants", id));
-
     fetchParticipants();
   };
 
   // EDIT
   const handleEdit = (participant) => {
     setEditingId(participant.id);
-
     setEditData(participant);
   };
 
@@ -73,7 +69,6 @@ export default function Admin() {
     });
 
     setEditingId(null);
-
     fetchParticipants();
   };
 
@@ -108,11 +103,8 @@ export default function Admin() {
     });
 
     const link = document.createElement("a");
-
     link.href = URL.createObjectURL(blob);
-
     link.download = "participants.csv";
-
     link.click();
   };
 
@@ -130,43 +122,30 @@ export default function Admin() {
         fontFamily: "Arial",
       }}
     >
-      <div
-        style={{
-          maxWidth: "1200px",
-          margin: "auto",
-        }}
-      >
-        <h1
-          style={{
-            textAlign: "center",
-            color: "#6d28d9",
-          }}
-        >
+      <div style={{ maxWidth: "1200px", margin: "auto" }}>
+        <h1 style={{ textAlign: "center", color: "#6d28d9" }}>
           📊 Smart Summer Admin Dashboard
         </h1>
 
-        {/* BUTTONS */}
-        <div
-          style={{
-            textAlign: "center",
-            marginTop: "20px",
-          }}
-        >
-          <button
-            onClick={() => window.location.reload()}
-            style={buttonStyle("#7c3aed")}
-          >
-            ⬅ Back to Home
-          </button>
+       {/* BUTTONS */}
+<div
+  style={{
+    textAlign: "center",
+    marginTop: "20px",
+  }}
+>
+  <button onClick={goBack} style={buttonStyle("#111")}>
+    ⬅ Back
+  </button>
 
-          <button onClick={exportCSV} style={buttonStyle("#2563eb")}>
-            ⬇ Download CSV
-          </button>
+  <button onClick={exportCSV} style={buttonStyle("#2563eb")}>
+    ⬇ Download CSV
+  </button>
 
-          <button onClick={downloadPDF} style={buttonStyle("#dc2626")}>
-            📄 Download PDF
-          </button>
-        </div>
+  <button onClick={downloadPDF} style={buttonStyle("#dc2626")}>
+    📄 Download PDF
+  </button>
+</div>
 
         {/* STATS */}
         <div
@@ -179,13 +158,11 @@ export default function Admin() {
         >
           <div style={cardStyle}>
             <h2>Total Enrollments</h2>
-
             <h1 style={{ color: "#7c3aed" }}>{totalParticipants}</h1>
           </div>
 
           <div style={cardStyle}>
             <h2>Cities Registered</h2>
-
             <h1 style={{ color: "#2563eb" }}>
               {Object.keys(cityCounts).length}
             </h1>
@@ -204,12 +181,7 @@ export default function Admin() {
           <h2 style={{ color: "#6d28d9" }}>📍 Registrations by City</h2>
 
           {Object.entries(cityCounts).map(([city, count]) => (
-            <div
-              key={city}
-              style={{
-                marginTop: "15px",
-              }}
-            >
+            <div key={city} style={{ marginTop: "15px" }}>
               <b>{city}</b> — {count} registrations
             </div>
           ))}
@@ -235,11 +207,7 @@ export default function Admin() {
             }}
           >
             <thead>
-              <tr
-                style={{
-                  background: "#ede9fe",
-                }}
-              >
+              <tr style={{ background: "#ede9fe" }}>
                 <th style={tableStyle}>Name</th>
                 <th style={tableStyle}>Phone</th>
                 <th style={tableStyle}>Area</th>
@@ -258,60 +226,45 @@ export default function Admin() {
                     <>
                       <td style={tableStyle}>
                         <input
-                          value={editData.name}
+                          value={editData.name || ""}
                           onChange={(e) =>
-                            setEditData({
-                              ...editData,
-                              name: e.target.value,
-                            })
+                            setEditData({ ...editData, name: e.target.value })
                           }
                         />
                       </td>
 
                       <td style={tableStyle}>
                         <input
-                          value={editData.phone}
+                          value={editData.phone || ""}
                           onChange={(e) =>
-                            setEditData({
-                              ...editData,
-                              phone: e.target.value,
-                            })
+                            setEditData({ ...editData, phone: e.target.value })
                           }
                         />
                       </td>
 
                       <td style={tableStyle}>
                         <input
-                          value={editData.area}
+                          value={editData.area || ""}
                           onChange={(e) =>
-                            setEditData({
-                              ...editData,
-                              area: e.target.value,
-                            })
+                            setEditData({ ...editData, area: e.target.value })
                           }
                         />
                       </td>
 
                       <td style={tableStyle}>
                         <input
-                          value={editData.city}
+                          value={editData.city || ""}
                           onChange={(e) =>
-                            setEditData({
-                              ...editData,
-                              city: e.target.value,
-                            })
+                            setEditData({ ...editData, city: e.target.value })
                           }
                         />
                       </td>
 
                       <td style={tableStyle}>
                         <input
-                          value={editData.age}
+                          value={editData.age || ""}
                           onChange={(e) =>
-                            setEditData({
-                              ...editData,
-                              age: e.target.value,
-                            })
+                            setEditData({ ...editData, age: e.target.value })
                           }
                         />
                       </td>
@@ -328,7 +281,7 @@ export default function Admin() {
                         />
                       </td>
 
-                      <td style={tableStyle}>{editData.attendance}</td>
+                      <td style={tableStyle}>{editData.attendance || ""}</td>
 
                       <td style={tableStyle}>
                         <button
@@ -342,17 +295,11 @@ export default function Admin() {
                   ) : (
                     <>
                       <td style={tableStyle}>{p.name}</td>
-
                       <td style={tableStyle}>{p.phone}</td>
-
                       <td style={tableStyle}>{p.area}</td>
-
                       <td style={tableStyle}>{p.city}</td>
-
                       <td style={tableStyle}>{p.age}</td>
-
                       <td style={tableStyle}>{p.referredBy}</td>
-
                       <td style={tableStyle}>{p.attendance}</td>
 
                       <td style={tableStyle}>
@@ -382,6 +329,7 @@ export default function Admin() {
   );
 }
 
+// STYLES
 const cardStyle = {
   background: "white",
   padding: "25px",
